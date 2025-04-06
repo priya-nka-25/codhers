@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>User Page</title>
+  <style>
+    body {
+      background-color: #f0f4f8;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      margin: 0;
+      padding: 0;
+    }
+
+    .header {
+      background-color:#0d9488 ;
+      color: white;
+      padding: 15px 30px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      box-shadow: 0px 2px 5px rgba(0,0,0,0.1);
+    }
+
+    .header-left {
+      font-size: 22px;
+      font-weight: bold;
+    }
+
+    .header-right {
+      display: flex;
+      gap: 25px;
+      align-items: center;
+    }
+
+    .rewards {
+      background-color: #1e90ff;
+      padding: 8px 16px;
+      border-radius: 25px;
+      font-size: 14px;
+      position: relative;
+      cursor: pointer;
+      transition: background 0.3s;
+    }
+
+    .rewards:hover {
+      background-color: #0f75d1;
+    }
+
+    .rewards::after {
+      content: attr(data-tooltip);
+      position: absolute;
+      bottom: -35px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: #fff;
+      color: #333;
+      padding: 8px 12px;
+      border-radius: 5px;
+      white-space: nowrap;
+      font-size: 12px;
+      box-shadow: 0px 2px 6px rgba(0, 0, 0, 0.2);
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.3s;
+      z-index: 1;
+    }
+
+    .rewards:hover::after {
+      opacity: 1;
+    }
+
+    .logout-btn {
+      background-color: #e74c3c;
+      border: none;
+      color: white;
+      padding: 8px 14px;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 14px;
+      transition: background-color 0.3s ease;
+    }
+
+    .logout-btn:hover {
+      background-color: #c0392b;
+    }
+
+    .container {
+      max-width: 900px;
+      margin: 50px auto;
+      background-color: #fff;
+      padding: 30px;
+      border-radius: 12px;
+      box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.1);
+    }
+
+    h1 {
+      text-align: center;
+      color: #2c3e50;
+    }
+
+    p {
+      font-size: 16px;
+      line-height: 1.6;
+      color: #444;
+    }
+
+    .section-title {
+      font-size: 20px;
+      margin-top: 30px;
+      color: #2980b9;
+      font-weight: bold;
+    }
+
+    ul {
+      margin-top: 10px;
+      padding-left: 20px;
+    }
+
+    li {
+      margin-bottom: 10px;
+    }
+
+    .redeem-box {
+      background: linear-gradient(135deg, #55efc4, #00cec9);
+      color: #fff;
+      padding: 25px;
+      border-radius: 10px;
+      margin-top: 30px;
+      text-align: center;
+      font-size: 18px;
+      font-weight: bold;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+      transition: transform 0.3s ease-in-out;
+    }
+
+    .redeem-box:hover {
+      transform: scale(1.02);
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Header -->
+  <div class="header">
+    <div class="header-left">👤 User Profile</div>
+    <div class="header-right">
+      <div class="rewards" data-tooltip="Rewards are based on valid and active issue reporting in your area.">🎖️ Rewards</div>
+      <button class="logout-btn" onclick="logout()">Logout</button>
+    </div>
+  </div>
+
+  <!-- Main Content -->
+  <div class="container">
+    <h1>Welcome, User!</h1>
+
+    <p>This page helps you understand how rewards are calculated and how to use them to make a difference in your community.</p>
+
+    <div class="section-title">How Rewards Are Calculated</div>
+    <ul>
+      <li><strong>+10 Points</strong> – For every valid issue reported in your locality.</li>
+      <li><strong>+15 Points</strong> – For actively engaging in issue updates and follow-ups.</li>
+      <li><strong>+20 Points</strong> – For consistently reporting actionable and verified information.</li>
+    </ul>
+
+    <p>Rewards encourage civic engagement and help improve your surroundings through responsible reporting. The more genuine reports you file, the more you earn!</p>
+
+    <div class="section-title">Redeem Your Rewards</div>
+    <p>You can use your reward points to gain access to premium features, digital certificates, recognition in the leaderboard, and more!</p>
+
+    <div class="redeem-box">
+      🎁 Tap into your impact! Redeem rewards and unlock benefits that recognize your contributions.
+    </div>
+  </div>
+
+  <script>
+    function logout() {
+      // Redirect to login page
+      window.location.href = "login.html";
+    }
+  </script>
+</body>
+</html>

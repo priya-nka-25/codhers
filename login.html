@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>CivicPulse Login</title>
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      font-family: 'Segoe UI', sans-serif;
+      background: #f2f4f8;
+      height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #333;
+    }
+
+    .container {
+      background: #ffffff;
+      border-radius: 16px;
+      padding: 2.5rem;
+      width: 100%;
+      max-width: 440px;
+      box-shadow: 0 6px 30px rgba(0, 0, 0, 0.1);
+      position: relative;
+    }
+
+    .back-btn {
+      position: absolute;
+      top: -35px;
+      left: 0;
+      color:#0d9488;
+      text-decoration: none;
+      font-weight: 500;
+    }
+
+    .title {
+      text-align: center;
+      margin-bottom: 1rem;
+    }
+
+    .title h2 {
+      font-size: 2rem;
+      margin-bottom: 0.25rem;
+      color: #2c3e50;
+    }
+
+    .title p {
+      font-size: 0.95rem;
+      color: #555;
+    }
+
+    .role-selection,
+    .auth-section {
+      display: none;
+    }
+
+    .role-selection.active,
+    .auth-section.active {
+      display: block;
+    }
+
+    .role-btn {
+      display: block;
+      width: 100%;
+      padding: 0.75rem;
+      margin: 0.5rem 0;
+      font-size: 1rem;
+      border: 1px solid #0d9488;
+      border-radius: 10px;
+      background-color: #ffffff;
+      color: #0d9488;
+      cursor: pointer;
+      transition: all 0.3s;
+    }
+
+    .role-btn:hover {
+      background-color: #0d9488;
+      color: white;
+    }
+
+    .tabs {
+      display: flex;
+      justify-content: space-around;
+      margin: 1rem 0;
+    }
+
+    .tab {
+      padding: 0.5rem;
+      cursor: pointer;
+      color: #0d9488;
+      border-bottom: 2px solid transparent;
+      transition: 0.3s;
+    }
+
+    .tab.active {
+      border-bottom: 3px solid #0d9488;
+      font-weight: bold;
+      color: #2c3e50;
+    }
+
+    .form {
+      display: none;
+    }
+
+    .form.active {
+      display: block;
+      animation: fadeIn 0.3s ease-in;
+    }
+
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+        transform: translateY(10px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    input {
+      width: 100%;
+      padding: 0.75rem;
+      margin-bottom: 1rem;
+      border: 1px solid #ccc;
+      border-radius: 8px;
+      font-size: 1rem;
+      background-color: #f9f9f9;
+      color: #333;
+    }
+
+    input::placeholder {
+      color: #999;
+    }
+
+    button {
+      width: 100%;
+      padding: 0.75rem;
+      border: none;
+      background-color: #0d9488;
+      color: white;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 1rem;
+      transition: background-color 0.3s;
+    }
+
+    button:hover {
+      background-color: #0d9488;
+    }
+
+    .forgot {
+      text-align: right;
+      font-size: 0.9rem;
+      margin-bottom: 1rem;
+    }
+
+    .forgot a {
+      color: #0d9488;
+      text-decoration: none;
+    }
+
+    .forgot a:hover {
+      text-decoration: underline;
+    }
+
+    #roleLabel {
+      text-align: center;
+      font-weight: 500;
+      margin-bottom: 1rem;
+      color: #333;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <a href="index.html" class="back-btn">← Back</a>
+    <div class="title">
+      <h2>CivicPulse</h2>
+      <p>Connecting Citizens to Civic Solutions</p>
+    </div>
+
+    <!-- Role Selection -->
+    <div class="role-selection active" id="roleSelection">
+      <button class="role-btn" onclick="selectRole('User')">Login as User</button>
+      <button class="role-btn" onclick="selectRole('Authority')">Login as Authority</button>
+    </div>
+
+    <!-- Auth Section -->
+    <div class="auth-section" id="authSection">
+      <p id="roleLabel"></p>
+      <div class="tabs">
+        <div class="tab active" onclick="switchTab('login')">Login</div>
+        <div class="tab" onclick="switchTab('register')">Register</div>
+      </div>
+      <div id="login" class="form active">
+        <input type="email" placeholder="Email" required />
+        <input type="password" placeholder="Password" required />
+        <div class="forgot"><a href="#">Forgot password?</a></div>
+        <button onclick="handleLogin(this)">Sign In</button>
+      </div>
+      <div id="register" class="form">
+        <input type="text" placeholder="Full Name" required />
+        <input type="email" placeholder="Email" required />
+        <input type="password" placeholder="Password" required />
+        <input type="password" placeholder="Confirm Password" required />
+        <button onclick="handleRegister(this)">Create Account</button>
+      </div>
+    </div>
+  </div>
+  <script>
+    let selectedRole = "";
+  
+    function selectRole(role) {
+      selectedRole = role; // Store the selected role
+      document.getElementById("roleSelection").classList.remove("active");
+      document.getElementById("authSection").classList.add("active");
+      document.getElementById("roleLabel").innerText = `You are logging in as: ${role}`;
+    }
+  
+    function switchTab(tab) {
+      document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+      document.querySelectorAll('.form').forEach(f => f.classList.remove('active'));
+      document.getElementById(tab).classList.add('active');
+      document.querySelector(`.tab[onclick*='${tab}']`).classList.add('active');
+    }
+  
+    function handleLogin(btn) {
+      const email = document.querySelector('#login input[type="email"]').value;
+      const password = document.querySelector('#login input[type="password"]').value;
+  
+      if (!email || !password) {
+        alert("Please enter both email and password.");
+        return;
+      }
+  
+      btn.innerText = 'Signing In...';
+  
+      setTimeout(() => {
+        btn.innerText = 'Sign In';
+        // Redirect based on selected role
+        if (selectedRole === "User") {
+          window.location.href = 'user-page.html';
+        } else if (selectedRole === "Authority") {
+          window.location.href = 'dashboard.html';
+        } else {
+          alert("Unknown role. Please try again.");
+        }
+      }, 1000);
+    }
+  
+    function handleRegister(btn) {
+      const name = document.querySelector('#register input[placeholder="Full Name"]').value;
+      const email = document.querySelector('#register input[type="email"]').value;
+      const pass1 = document.querySelector('#register input[placeholder="Password"]').value;
+      const pass2 = document.querySelector('#register input[placeholder="Confirm Password"]').value;
+  
+      if (!name || !email || !pass1 || !pass2) {
+        alert("Please fill in all fields.");
+        return;
+      }
+  
+      if (pass1 !== pass2) {
+        alert("Passwords do not match.");
+        return;
+      }
+  
+      btn.innerText = 'Creating...';
+      setTimeout(() => {
+        btn.innerText = 'Create Account';
+        alert('Account created!');
+        switchTab('login');
+      }, 1000);
+    }
+  </script>
+  
+  
+</body>
+</html>

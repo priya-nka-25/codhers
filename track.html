@@ -1,0 +1,817 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Track Your Complaint - CivicPulse</title>
+  <style>
+    /* Base styles */
+    :root {
+      --primary: #0d9488;
+      --primary-hover: #0d9488;
+      --blue-100: #dbeafe;
+      --blue-800: #1e40af;
+      --orange-100: #ffedd5;
+      --orange-800: #9a3412;
+      --yellow-100: #fef9c3;
+      --yellow-800: #854d0e;
+      --green-100: #dcfce7;
+      --green-800: #166534;
+      --gray-50: #f9fafb;
+      --gray-100: #f3f4f6;
+      --gray-200: #e5e7eb;
+      --gray-300: #d1d5db;
+      --gray-500: #6b7280;
+      --gray-700: #374151;
+      --gray-800: #1f2937;
+      --gray-900: #111827;
+      --red-50: #fef2f2;
+      --red-200: #fecaca;
+      --red-700: #b91c1c;
+    }
+    
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+    }
+    
+    body {
+      background-color: var(--gray-50);
+      color: var(--gray-900);
+      min-height: 100vh;
+    }
+    
+    /* Header */
+    header {
+      background-color: white;
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+      padding: 1rem;
+    }
+    
+    .header-container {
+      max-width: 1200px;
+      margin: 0 auto;
+      display: flex;
+      align-items: center;
+    }
+    
+    .back-button {
+      background: transparent;
+      border: none;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      padding: 0.5rem;
+      margin-right: 0.5rem;
+      border-radius: 0.375rem;
+    }
+    
+    .back-button:hover {
+      background-color: var(--gray-100);
+    }
+    
+    h1 {
+      font-size: 1.5rem;
+      font-weight: 600;
+      color: var(--gray-800);
+    }
+    
+    /* Main content */
+    main {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 2rem 1rem;
+    }
+    
+    /* Search section */
+    .search-container {
+      background-color: white;
+      border-radius: 0.5rem;
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+      padding: 1.5rem;
+      margin-bottom: 2rem;
+    }
+    
+    .search-title {
+      font-size: 1.25rem;
+      font-weight: 500;
+      margin-bottom: 1rem;
+      color: var(--gray-700);
+    }
+    
+    .search-form {
+      display: flex;
+      flex-direction: column;
+      gap: 0.75rem;
+    }
+    
+    @media (min-width: 640px) {
+      .search-form {
+        flex-direction: row;
+      }
+    }
+    
+    .search-input {
+      flex: 1;
+      padding: 0.75rem 1rem;
+      border: 1px solid var(--gray-300);
+      border-radius: 0.375rem;
+      font-size: 1rem;
+    }
+    
+    .search-input:focus {
+      outline: none;
+      border-color: var(--primary);
+      box-shadow: 0 0 0 2px #0d9488;
+    }
+    
+    .search-button {
+      background-color: #0d9488;
+      color: white;
+      border: none;
+      border-radius: 0.375rem;
+      padding: 0.75rem 1.5rem;
+      font-weight: 500;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      min-width: 100px;
+      justify-content: center;
+    }
+    
+    .search-button:hover {
+      background-color: var(--primary-hover);
+    }
+    
+    .search-button:disabled {
+      opacity: 0.7;
+      cursor: not-allowed;
+    }
+    
+    .sample-ids {
+      font-size: 0.875rem;
+      color: var(--gray-500);
+      margin-top: 0.5rem;
+    }
+    
+    /* Error message */
+    .error-message {
+      background-color: var(--red-50);
+      border: 1px solid var(--red-200);
+      border-radius: 0.5rem;
+      padding: 1rem;
+      color: var(--red-700);
+      margin-bottom: 2rem;
+    }
+    
+    /* Empty state */
+    .empty-state {
+      background-color: white;
+      border-radius: 0.5rem;
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+      padding: 2rem;
+      text-align: center;
+    }
+    
+    .empty-state-title {
+      font-size: 1.25rem;
+      font-weight: 500;
+      margin-bottom: 0.5rem;
+      color: var(--gray-700);
+    }
+    
+    .empty-state-text {
+      color: var(--gray-500);
+    }
+    
+    /* Complaint details */
+    .complaint-details {
+      background-color: white;
+      border-radius: 0.5rem;
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+      margin-bottom: 1.5rem;
+      padding: 1.5rem;
+    }
+    
+    .complaint-header {
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+      margin-bottom: 1rem;
+      padding-bottom: 1rem;
+      border-bottom: 1px solid var(--gray-200);
+    }
+    
+    @media (min-width: 768px) {
+      .complaint-header {
+        flex-direction: row;
+        align-items: center;
+        justify-content: space-between;
+      }
+    }
+    
+    .complaint-title {
+      font-size: 1.5rem;
+      font-weight: 600;
+    }
+    
+    .complaint-id {
+      color: var(--gray-500);
+      margin-top: 0.25rem;
+    }
+    
+    .status-badge {
+      display: inline-flex;
+      padding: 0.25rem 0.75rem;
+      border-radius: 9999px;
+      font-size: 0.875rem;
+      font-weight: 500;
+      border: 1px solid;
+    }
+    
+    .status-new {
+      background-color: var(--blue-100);
+      color: var(--blue-800);
+      border-color: var(--blue-100);
+    }
+    
+    .status-assigned {
+      background-color: var(--orange-100);
+      color: var(--orange-800);
+      border-color: var(--orange-100);
+    }
+    
+    .status-in-progress {
+      background-color: var(--yellow-100);
+      color: var(--yellow-800);
+      border-color: var(--yellow-100);
+    }
+    
+    .status-resolved {
+      background-color: var(--green-100);
+      color: var(--green-800);
+      border-color: var(--green-100);
+    }
+    
+    .complaint-info-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 1rem;
+      margin-bottom: 1.5rem;
+    }
+    
+    @media (min-width: 640px) {
+      .complaint-info-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+    }
+    
+    @media (min-width: 1024px) {
+      .complaint-info-grid {
+        grid-template-columns: repeat(4, 1fr);
+      }
+    }
+    
+    .info-item h3 {
+      font-size: 0.875rem;
+      font-weight: 500;
+      color: var(--gray-500);
+      margin-bottom: 0.25rem;
+    }
+    
+    .location-section, .description-section {
+      margin-bottom: 1.5rem;
+    }
+    
+    .location-section h3, .description-section h3 {
+      font-size: 0.875rem;
+      font-weight: 500;
+      color: var(--gray-500);
+      margin-bottom: 0.5rem;
+    }
+    
+    .info-box {
+      background-color: var(--gray-50);
+      padding: 0.75rem;
+      border-radius: 0.375rem;
+      white-space: pre-line;
+    }
+    
+    /* Progress indicator */
+    .progress-container {
+      background-color: white;
+      border-radius: 0.5rem;
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+      padding: 1.5rem;
+      margin-bottom: 1.5rem;
+    }
+    
+    .progress-title {
+      font-size: 1.25rem;
+      font-weight: 500;
+      margin-bottom: 1rem;
+    }
+    
+    .progress-indicator {
+      position: relative;
+      display: flex;
+      justify-content: space-between;
+      margin-top: 2rem;
+    }
+    
+    .progress-line {
+      position: absolute;
+      top: 1rem;
+      left: 0;
+      right: 0;
+      height: 2px;
+      background-color: var(--gray-300);
+      z-index: 1;
+    }
+    
+    .progress-complete {
+      position: absolute;
+      top: 1rem;
+      left: 0;
+      height: 2px;
+      background-color: var(--primary);
+      z-index: 2;
+    }
+    
+    .progress-step {
+      position: relative;
+      z-index: 3;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+    
+    .step-circle {
+      width: 2rem;
+      height: 2rem;
+      border-radius: 50%;
+      border: 2px solid;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background-color: white;
+      margin-bottom: 0.5rem;
+    }
+    
+    .step-complete {
+      background-color: var(--primary);
+      border-color: var(--primary);
+      color: white;
+    }
+    
+    .step-current {
+      border-color: var(--primary);
+      box-shadow: 0 0 0 4px rgba(168, 85, 247, 0.25);
+    }
+    
+    .step-future {
+      border-color: var(--gray-300);
+      color: var(--gray-500);
+    }
+    
+    .step-label {
+      font-size: 0.875rem;
+      font-weight: 500;
+    }
+    
+    .step-complete-label, .step-current-label {
+      color: var(--gray-900);
+    }
+    
+    .step-future-label {
+      color: var(--gray-500);
+    }
+    
+    /* Timeline */
+    .timeline-container {
+      background-color: white;
+      border-radius: 0.5rem;
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+      padding: 1.5rem;
+    }
+    
+    .timeline-title {
+      font-size: 1.25rem;
+      font-weight: 500;
+      margin-bottom: 1.5rem;
+    }
+    
+    .timeline {
+      position: relative;
+    }
+    
+    .timeline-item {
+      position: relative;
+      padding-bottom: 2rem;
+    }
+    
+    .timeline-item:last-child {
+      padding-bottom: 0;
+    }
+    
+    .timeline-item:not(:last-child)::after {
+      content: '';
+      position: absolute;
+      top: 2.5rem;
+      left: 1.25rem;
+      bottom: 0;
+      width: 1px;
+      background-color: var(--gray-200);
+    }
+    
+    .timeline-content {
+      position: relative;
+      display: flex;
+      gap: 1rem;
+    }
+    
+    .timeline-icon {
+      position: relative;
+      z-index: 1;
+      width: 2.5rem;
+      height: 2.5rem;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    
+    .icon-new {
+      background-color: var(--blue-100);
+    }
+    
+    .icon-assigned {
+      background-color: var(--orange-100);
+    }
+    
+    .icon-in-progress {
+      background-color: var(--yellow-100);
+    }
+    
+    .icon-resolved {
+      background-color: var(--green-100);
+    }
+    
+    .timeline-body {
+      flex: 1;
+    }
+    
+    .timeline-header {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 0.5rem;
+    }
+    
+    .timeline-status {
+      font-weight: 500;
+    }
+    
+    .timeline-date {
+      color: var(--gray-500);
+      font-size: 0.875rem;
+    }
+    
+    .timeline-message {
+      color: var(--gray-700);
+    }
+
+    .loading-spinner {
+      display: inline-block;
+      width: 1.5rem;
+      height: 1.5rem;
+      border: 3px solid rgba(255,255,255,0.3);
+      border-radius: 50%;
+      border-top-color: white;
+      animation: spin 1s ease-in-out infinite;
+    }
+
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <div class="header-container">
+      <button class="back-button" onclick="goBack()">
+        <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M19 12H5"></path>
+          <path d="M12 19l-7-7 7-7"></path>
+        </svg>
+      </button>
+      <h1>Track Your Complaint</h1>
+    </div>
+  </header>
+
+  <main>
+    <section class="search-container">
+      <h2 class="search-title">Search for your complaint</h2>
+      <form id="searchForm" class="search-form">
+        <input
+          type="text"
+          id="complaintId"
+          class="search-input"
+          placeholder="Enter complaint ID (e.g., CMP-2023-1234)"
+          required
+        />
+        <button type="submit" id="searchButton" class="search-button">Search</button>
+      </form>
+      <p class="sample-ids">
+        Try these sample IDs: CMP-2023-1234, CMP-2023-5678, CMP-2023-9012
+      </p>
+    </section>
+
+    <div id="errorContainer" class="error-message" style="display: none;"></div>
+
+    <div id="emptyState" class="empty-state">
+      <h2 class="empty-state-title">Enter your complaint ID</h2>
+      <p class="empty-state-text">
+        Use the search box above to find your complaint by its unique ID.
+      </p>
+    </div>
+
+    <div id="complaintContainer" style="display: none;">
+      <!-- Complaint details will be inserted here -->
+    </div>
+  </main>
+
+  <script>
+    // Mock data for complaints
+    const mockComplaints = [
+      {
+        id: "CMP-2023-1234",
+        title: "Pothole on Main Street",
+        status: "In Progress",
+        category: "Infrastructure",
+        priority: "Medium",
+        department: "Public Works",
+        location: "Main Street, between 5th and 6th Avenue",
+        description: "There's a large pothole on Main Street that's causing damage to vehicles. It's approximately 2 feet wide and 6 inches deep. It appeared after the recent heavy rainfall and has been growing larger.",
+        submittedDate: "2023-04-15",
+        timeline: [
+          {
+            date: "2023-04-15",
+            status: "New",
+            message: "Complaint received and logged into our system."
+          },
+          {
+            date: "2023-04-16",
+            status: "Assigned",
+            message: "Assigned to Public Works Department for assessment."
+          },
+          {
+            date: "2023-04-18",
+            status: "In Progress",
+            message: "Inspection completed. Repair scheduled for next week."
+          }
+        ]
+      },
+      {
+        id: "CMP-2023-5678",
+        title: "Streetlight Outage",
+        status: "Resolved",
+        category: "Infrastructure",
+        priority: "High",
+        department: "Utilities",
+        location: "Corner of Oak Street and Pine Avenue",
+        description: "The streetlight at the corner of Oak Street and Pine Avenue has been out for over a week, creating a safety hazard for pedestrians and drivers at night.",
+        submittedDate: "2023-04-10",
+        timeline: [
+          {
+            date: "2023-04-10",
+            status: "New",
+            message: "Complaint received and logged into our system."
+          },
+          {
+            date: "2023-04-11",
+            status: "Assigned",
+            message: "Assigned to Utilities Department for assessment."
+          },
+          {
+            date: "2023-04-12",
+            status: "In Progress",
+            message: "Inspection completed. Faulty bulb identified."
+          },
+          {
+            date: "2023-04-14",
+            status: "Resolved",
+            message: "Streetlight repaired and fully operational."
+          }
+        ]
+      },
+      {
+        id: "CMP-2023-9012",
+        title: "Noise Complaint",
+        status: "Assigned",
+        category: "Public Nuisance",
+        priority: "Low",
+        department: "Police Department",
+        location: "123 Elm Street",
+        description: "Construction noise starting before 7am at the building site on Elm Street. This has been ongoing for several days and is disrupting the neighborhood.",
+        submittedDate: "2023-04-20",
+        timeline: [
+          {
+            date: "2023-04-20",
+            status: "New",
+            message: "Complaint received and logged into our system."
+          },
+          {
+            date: "2023-04-21",
+            status: "Assigned",
+            message: "Assigned to Police Department for investigation."
+          }
+        ]
+      }
+    ];
+
+    // DOM elements
+    const searchForm = document.getElementById('searchForm');
+    const searchButton = document.getElementById('searchButton');
+    const complaintIdInput = document.getElementById('complaintId');
+    const errorContainer = document.getElementById('errorContainer');
+    const emptyState = document.getElementById('emptyState');
+    const complaintContainer = document.getElementById('complaintContainer');
+
+    // Event listeners
+    searchForm.addEventListener('submit', handleSearch);
+
+    // Functions
+    function handleSearch(event) {
+      event.preventDefault();
+      
+      const complaintId = complaintIdInput.value.trim();
+      if (!complaintId) return;
+      
+      // Show loading state
+      searchButton.disabled = true;
+      searchButton.innerHTML = '<div class="loading-spinner"></div> Searching';
+      errorContainer.style.display = 'none';
+      
+      // Simulate API call with timeout
+      setTimeout(() => {
+        const complaint = mockComplaints.find(c => c.id === complaintId);
+        
+        if (complaint) {
+          displayComplaint(complaint);
+          emptyState.style.display = 'none';
+          complaintContainer.style.display = 'block';
+          errorContainer.style.display = 'none';
+        } else {
+          errorContainer.textContent = `No complaint found with ID: ${complaintId}`;
+          errorContainer.style.display = 'block';
+          emptyState.style.display = 'block';
+          complaintContainer.style.display = 'none';
+        }
+        
+        // Reset loading state
+        searchButton.disabled = false;
+        searchButton.textContent = 'Search';
+      }, 1200); // Simulate 1.2s loading time
+    }
+
+    function displayComplaint(complaint) {
+      // Calculate progress percentage based on status
+      const statusSteps = ['New', 'Assigned', 'In Progress', 'Resolved'];
+      const currentStatusIndex = statusSteps.findIndex(s => s === complaint.status);
+      const progressPercentage = Math.min(100, (currentStatusIndex / (statusSteps.length - 1)) * 100);
+      
+      // Sort timeline in reverse chronological order (newest first)
+      const sortedTimeline = [...complaint.timeline].sort((a, b) => 
+        new Date(b.date).getTime() - new Date(a.date).getTime()
+      );
+      
+      // Generate HTML for complaint details
+      const complaintHTML = `
+        <div class="complaint-details">
+          <div class="complaint-header">
+            <div>
+              <h2 class="complaint-title">${complaint.title}</h2>
+              <p class="complaint-id">Reference ID: ${complaint.id}</p>
+            </div>
+            <span class="status-badge status-${complaint.status.toLowerCase().replace(' ', '-')}">
+              ${complaint.status}
+            </span>
+          </div>
+          
+          <div class="complaint-info-grid">
+            <div class="info-item">
+              <h3>Category</h3>
+              <p>${complaint.category}</p>
+            </div>
+            <div class="info-item">
+              <h3>Priority</h3>
+              <p>${complaint.priority}</p>
+            </div>
+            <div class="info-item">
+              <h3>Department</h3>
+              <p>${complaint.department}</p>
+            </div>
+            <div class="info-item">
+              <h3>Submitted</h3>
+              <p>${complaint.submittedDate}</p>
+            </div>
+          </div>
+          
+          <div class="location-section">
+            <h3>Location</h3>
+            <p class="info-box">${complaint.location}</p>
+          </div>
+          
+          <div class="description-section">
+            <h3>Description</h3>
+            <p class="info-box">${complaint.description}</p>
+          </div>
+        </div>
+        
+        <div class="progress-container">
+          <h3 class="progress-title">Complaint Progress</h3>
+          <div class="progress-indicator">
+            <div class="progress-line"></div>
+            <div class="progress-complete" style="width: ${progressPercentage}%;"></div>
+            
+            ${statusSteps.map((step, index) => {
+              let stepClass = '';
+              let checkIcon = '';
+              
+              if (index < currentStatusIndex) {
+                stepClass = 'step-complete';
+                checkIcon = '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>';
+              } else if (index === currentStatusIndex) {
+                stepClass = 'step-current';
+              } else {
+                stepClass = 'step-future';
+              }
+              
+              return `
+                <div class="progress-step">
+                  <div class="step-circle ${stepClass}">
+                    ${checkIcon}
+                  </div>
+                  <span class="step-label ${index <= currentStatusIndex ? 'step-complete-label' : 'step-future-label'}">
+                    ${step}
+                  </span>
+                </div>
+              `;
+            }).join('')}
+          </div>
+        </div>
+        
+        <div class="timeline-container">
+          <h3 class="timeline-title">Status Updates</h3>
+          <div class="timeline">
+            ${sortedTimeline.map((item, index) => {
+              const getStatusIcon = (status) => {
+                switch (status) {
+                  case 'New':
+                    return '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#1e40af" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path><path d="M13.73 21a2 2 0 0 1-3.46 0"></path></svg>';
+                  case 'Assigned':
+                    return '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#9a3412" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>';
+                  case 'In Progress':
+                    return '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#854d0e" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>';
+                  case 'Resolved':
+                    return '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#166534" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>';
+                  default:
+                    return '';
+                }
+              };
+              
+              const iconClass = `icon-${item.status.toLowerCase().replace(' ', '-')}`;
+              
+              return `
+                <div class="timeline-item">
+                  <div class="timeline-content">
+                    <div class="timeline-icon ${iconClass}">
+                      ${getStatusIcon(item.status)}
+                    </div>
+                    <div class="timeline-body">
+                      <div class="timeline-header">
+                        <p class="timeline-status">${item.status}</p>
+                        <p class="timeline-date">${item.date}</p>
+                      </div>
+                      <p class="timeline-message">${item.message}</p>
+                    </div>
+                  </div>
+                </div>
+              `;
+            }).join('')}
+          </div>
+        </div>
+      `;
+      
+      complaintContainer.innerHTML = complaintHTML;
+    }
+
+    function goBack() {
+      window.history.back();
+    }
+  </script>
+</body>
+</html>

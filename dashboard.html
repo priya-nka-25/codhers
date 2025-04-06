@@ -1,0 +1,1864 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CivicPulse Admin Dashboard</title>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap">
+  <style>
+    /* Base styles */
+    :root {
+      --primary: #9b87f5;
+      --primary-hover: #8a76f3;
+      --primary-light: #f5f3ff;
+      --success: #10b981;
+      --warning: #f59e0b;
+      --info: #3b82f6;
+      --danger: #ef4444;
+      --gray-50: #f9fafb;
+      --gray-100: #f3f4f6;
+      --gray-200: #e5e7eb;
+      --gray-300: #d1d5db;
+      --gray-400: #9ca3af;
+      --gray-500: #6b7280;
+      --gray-600: #4b5563;
+      --gray-700: #374151;
+      --gray-800: #1f2937;
+      --gray-900: #111827;
+    }
+    
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+    }
+    
+    body {
+      background-color: var(--gray-50);
+      color: var(--gray-900);
+      min-height: 100vh;
+    }
+    
+    /* Layout */
+    .container {
+      max-width: 1280px;
+      margin: 0 auto;
+      padding: 0 1rem;
+    }
+    
+    .flex {
+      display: flex;
+    }
+    
+    .items-center {
+      align-items: center;
+    }
+    
+    .justify-between {
+      justify-content: space-between;
+    }
+    
+    .justify-end {
+      justify-content: flex-end;
+    }
+    
+    .gap-2 {
+      gap: 0.5rem;
+    }
+    
+    .gap-3 {
+      gap: 0.75rem;
+    }
+    
+    .gap-4 {
+      gap: 1rem;
+    }
+    
+    .gap-6 {
+      gap: 1.5rem;
+    }
+    
+    .flex-col {
+      flex-direction: column;
+    }
+    
+    .flex-row {
+      flex-direction: row;
+    }
+    
+    .flex-wrap {
+      flex-wrap: wrap;
+    }
+    
+    .grid {
+      display: grid;
+    }
+    
+    .grid-cols-1 {
+      grid-template-columns: repeat(1, minmax(0, 1fr));
+    }
+    
+    @media (min-width: 640px) {
+      .sm\:flex-row {
+        flex-direction: row;
+      }
+      
+      .sm\:w-auto {
+        width: auto;
+      }
+    }
+    
+    @media (min-width: 768px) {
+      .md\:flex-row {
+        flex-direction: row;
+      }
+      
+      .md\:grid-cols-2 {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+      
+      .md\:items-center {
+        align-items: center;
+      }
+      
+      .md\:w-auto {
+        width: auto;
+      }
+      
+      .md\:w-1\/3 {
+        width: 33.333333%;
+      }
+      
+      .md\:text-3xl {
+        font-size: 1.875rem;
+        line-height: 2.25rem;
+      }
+      
+      .md\:mt-0 {
+        margin-top: 0;
+      }
+      
+      .md\:flex {
+        display: flex;
+      }
+      
+      .md\:hidden {
+        display: none;
+      }
+    }
+    
+    @media (min-width: 1024px) {
+      .lg\:grid-cols-4 {
+        grid-template-columns: repeat(4, minmax(0, 1fr));
+      }
+      
+      .lg\:grid-cols-2 {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+      
+      .lg\:col-span-2 {
+        grid-column: span 2 / span 2;
+      }
+    }
+    
+    /* Header */
+    .header {
+      background-color: white;
+      border-bottom: 1px solid var(--gray-200);
+      box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+    }
+    
+    .header-content {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      height: 4rem;
+    }
+    
+    .logo {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    
+    .logo-text {
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: var(--primary);
+    }
+    
+    .admin-badge {
+      font-size: 0.75rem;
+      background-color: var(--gray-200);
+      padding: 0.25rem 0.5rem;
+      border-radius: 9999px;
+    }
+    
+    .nav {
+      display: none;
+    }
+    
+    @media (min-width: 768px) {
+      .nav {
+        display: flex;
+        margin-left: 2.5rem;
+        gap: 1rem;
+      }
+    }
+    
+    .nav-link {
+      padding: 0.5rem 0.75rem;
+      font-size: 0.875rem;
+      font-weight: 500;
+      color: var(--gray-700);
+      text-decoration: none;
+      transition: color 0.2s;
+    }
+    
+    .nav-link:hover, .nav-link.active {
+      color: var(--primary);
+    }
+    
+    .header-actions {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+    }
+    
+    /* Buttons */
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 0.375rem;
+      font-size: 0.875rem;
+      font-weight: 500;
+      line-height: 1.25rem;
+      transition-property: color, background-color, border-color;
+      transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+      transition-duration: 150ms;
+      cursor: pointer;
+    }
+    
+    .btn-primary {
+      background-color: var(--primary);
+      color: white;
+      border: none;
+      padding: 0.5rem 1rem;
+    }
+    
+    .btn-primary:hover {
+      background-color: var(--primary-hover);
+    }
+    
+    .btn-outline {
+      background-color: transparent;
+      color: var(--gray-700);
+      border: 1px solid var(--gray-300);
+      padding: 0.5rem 1rem;
+    }
+    
+    .btn-outline:hover {
+      background-color: var(--gray-100);
+    }
+    
+    .btn-icon {
+      padding: 0.5rem;
+      border: none;
+      background-color: transparent;
+    }
+    
+    .btn-icon:hover {
+      background-color: var(--gray-100);
+      border-radius: 0.375rem;
+    }
+    
+    .btn-ghost {
+      border: none;
+      background-color: transparent;
+      padding: 0.5rem;
+    }
+    
+    .btn-ghost:hover {
+      background-color: var(--gray-100);
+      border-radius: 0.375rem;
+    }
+    
+    .btn .loading-spinner {
+      margin-right: 0.5rem;
+    }
+    
+    /* Icons */
+    .icon {
+      width: 1.25rem;
+      height: 1.25rem;
+      stroke: currentColor;
+      stroke-width: 2;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+      fill: none;
+    }
+    
+    .icon-sm {
+      width: 1rem;
+      height: 1rem;
+    }
+    
+    .icon-badge {
+      position: relative;
+    }
+    
+    .icon-badge::after {
+      content: '';
+      position: absolute;
+      top: 0;
+      right: 0;
+      width: 0.5rem;
+      height: 0.5rem;
+      background-color: var(--danger);
+      border-radius: 50%;
+      border: 2px solid white;
+    }
+    
+    /* Dropdown */
+    .dropdown {
+      position: relative;
+    }
+    
+    .dropdown-menu {
+      position: absolute;
+      top: 100%;
+      right: 0;
+      z-index: 10;
+      min-width: 15rem;
+      margin-top: 0.5rem;
+      background-color: white;
+      border-radius: 0.375rem;
+      box-shadow: 0 10px 15px -3px rgba(0,0,0,0.1), 0 4px 6px -2px rgba(0,0,0,0.05);
+      border: 1px solid var(--gray-200);
+      display: none;
+    }
+    
+    .dropdown-menu.show {
+      display: block;
+    }
+    
+    .dropdown-menu-notification {
+      min-width: 20rem;
+    }
+    
+    .dropdown-header {
+      padding: 0.75rem 1rem;
+      font-weight: 500;
+      border-bottom: 1px solid var(--gray-200);
+    }
+    
+    .dropdown-body {
+      max-height: 20rem;
+      overflow-y: auto;
+    }
+    
+    .dropdown-item {
+      padding: 0.75rem 1rem;
+      cursor: pointer;
+      transition: background-color 0.2s;
+    }
+    
+    .dropdown-item:hover {
+      background-color: var(--gray-100);
+    }
+    
+    .dropdown-item-icon {
+      margin-right: 0.5rem;
+    }
+    
+    .dropdown-divider {
+      height: 0;
+      margin: 0.5rem 0;
+      overflow: hidden;
+      border-top: 1px solid var(--gray-200);
+    }
+    
+    /* Main content */
+    .main {
+      padding: 1.5rem 0;
+    }
+    
+    .page-header {
+      margin-bottom: 1.5rem;
+    }
+    
+    .page-title {
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: var(--gray-800);
+    }
+    
+    @media (min-width: 768px) {
+      .page-title {
+        font-size: 1.875rem;
+      }
+    }
+    
+    .section {
+      margin-bottom: 1.5rem;
+    }
+    
+    /* Form controls */
+    .form-control {
+      position: relative;
+      width: 100%;
+    }
+    
+    .input {
+      width: 100%;
+      padding: 0.5rem 0.75rem;
+      border: 1px solid var(--gray-300);
+      border-radius: 0.375rem;
+      font-size: 0.875rem;
+      transition: border-color 0.2s;
+    }
+    
+    .input:focus {
+      outline: none;
+      border-color: var(--primary);
+      box-shadow: 0 0 0 2px var(--primary-light);
+    }
+    
+    .input-icon {
+      padding-left: 2.5rem;
+    }
+    
+    .input-icon-left {
+      position: absolute;
+      left: 0.75rem;
+      top: 50%;
+      transform: translateY(-50%);
+      color: var(--gray-500);
+    }
+    
+    .select {
+      display: inline-flex;
+      align-items: center;
+      position: relative;
+      width: 100%;
+    }
+    
+    .select-trigger {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      width: 100%;
+      padding: 0.5rem 0.75rem;
+      border: 1px solid var(--gray-300);
+      border-radius: 0.375rem;
+      background-color: white;
+      cursor: pointer;
+      transition: border-color 0.2s;
+    }
+    
+    .select-trigger:focus {
+      outline: none;
+      border-color: var(--primary);
+      box-shadow: 0 0 0 2px var(--primary-light);
+    }
+    
+    .select-content {
+      position: absolute;
+      top: 100%;
+      left: 0;
+      right: 0;
+      z-index: 10;
+      margin-top: 0.25rem;
+      background-color: white;
+      border-radius: 0.375rem;
+      box-shadow: 0 10px 15px -3px rgba(0,0,0,0.1), 0 4px 6px -2px rgba(0,0,0,0.05);
+      border: 1px solid var(--gray-200);
+      max-height: 15rem;
+      overflow-y: auto;
+      display: none;
+    }
+    
+    .select-content.show {
+      display: block;
+    }
+    
+    .select-item {
+      padding: 0.5rem 0.75rem;
+      cursor: pointer;
+      transition: background-color 0.2s;
+    }
+    
+    .select-item:hover {
+      background-color: var(--gray-100);
+    }
+    
+    /* Tabs */
+    .tabs {
+      display: flex;
+      flex-direction: column;
+      width: 100%;
+    }
+    
+    .tabs-list {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      background-color: var(--gray-100);
+      padding: 0.25rem;
+      border-radius: 0.375rem;
+      margin-bottom: 1.5rem;
+    }
+    
+    .tab-trigger {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 0.25rem;
+      padding: 0.5rem 0.75rem;
+      font-size: 0.875rem;
+      font-weight: 500;
+      color: var(--gray-500);
+      cursor: pointer;
+      transition: background-color 0.2s, color 0.2s;
+    }
+    
+    .tab-trigger:hover {
+      color: var(--gray-700);
+    }
+    
+    .tab-trigger.active {
+      background-color: white;
+      color: var(--gray-900);
+      box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+    }
+    
+    .tab-content {
+      display: none;
+    }
+    
+    .tab-content.active {
+      display: block;
+    }
+    
+    /* Cards */
+    .card {
+      background-color: white;
+      border-radius: 0.5rem;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+      overflow: hidden;
+    }
+    
+    .card-header {
+      padding: 1rem 1.25rem;
+      border-bottom: 1px solid var(--gray-200);
+    }
+    
+    .card-title {
+      font-size: 1.125rem;
+      font-weight: 600;
+      color: var(--gray-800);
+    }
+    
+    .card-subtitle {
+      font-size: 0.875rem;
+      color: var(--gray-500);
+      margin-top: 0.25rem;
+    }
+    
+    .card-body {
+      padding: 1.25rem;
+    }
+    
+    .card-footer {
+      padding: 1rem 1.25rem;
+      border-top: 1px solid var(--gray-200);
+    }
+    
+    /* Metric Cards */
+    .metrics-grid {
+      display: grid;
+      grid-template-columns: repeat(1, 1fr);
+      gap: 1.5rem;
+    }
+    
+    @media (min-width: 640px) {
+      .metrics-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+    }
+    
+    @media (min-width: 1024px) {
+      .metrics-grid {
+        grid-template-columns: repeat(4, 1fr);
+      }
+    }
+    
+    .metric-card {
+      overflow: hidden;
+      height: 100%;
+    }
+    
+    .metric-card-body {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      position: relative;
+      padding: 1.25rem;
+    }
+    
+    .metric-card-blue {
+      background: linear-gradient(to right, #3b82f6, #2563eb);
+    }
+    
+    .metric-card-green {
+      background: linear-gradient(to right, #10b981, #059669);
+    }
+    
+    .metric-card-orange {
+      background: linear-gradient(to right, #f59e0b, #d97706);
+    }
+    
+    .metric-card-purple {
+      background: linear-gradient(to right, #9b87f5, #8366f4);
+    }
+    
+    .metric-content {
+      color: white;
+    }
+    
+    .metric-label {
+      font-size: 0.875rem;
+      font-weight: 500;
+      opacity: 0.9;
+    }
+    
+    .metric-value {
+      font-size: 1.5rem;
+      font-weight: 700;
+      margin-top: 0.25rem;
+    }
+    
+    .metric-icon {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 3rem;
+      height: 3rem;
+      border-radius: 9999px;
+      background-color: rgba(255, 255, 255, 0.2);
+      color: white;
+    }
+    
+    /* Charts */
+    .charts-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 1.5rem;
+      margin: 1.5rem 0;
+    }
+    
+    @media (min-width: 768px) {
+      .charts-grid {
+        grid-template-columns: repeat(2, 1fr);
+      }
+    }
+    
+    .chart-container {
+      min-height: 20rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    
+    .status-chart {
+      grid-column: span 1;
+    }
+    
+    @media (min-width: 768px) {
+      .status-chart {
+        grid-column: span 2;
+      }
+    }
+    
+    /* Table */
+    .table-container {
+      overflow-x: auto;
+      border: 1px solid var(--gray-200);
+      border-radius: 0.5rem;
+    }
+    
+    .table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+    
+    .table th {
+      background-color: var(--gray-50);
+      padding: 0.75rem 1rem;
+      text-align: left;
+      font-size: 0.875rem;
+      font-weight: 500;
+      color: var(--gray-700);
+      border-bottom: 1px solid var(--gray-200);
+    }
+    
+    .table td {
+      padding: 0.75rem 1rem;
+      border-bottom: 1px solid var(--gray-200);
+      font-size: 0.875rem;
+    }
+    
+    .table tr:last-child td {
+      border-bottom: none;
+    }
+    
+    .table th:last-child, .table td:last-child {
+      text-align: right;
+    }
+    
+    .table-row:hover {
+      background-color: var(--gray-50);
+    }
+    
+    /* Status Badges */
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 9999px;
+      padding: 0.25rem 0.5rem;
+      font-size: 0.75rem;
+      font-weight: 500;
+    }
+    
+    .badge-blue {
+      background-color: #dbeafe;
+      color: #1e40af;
+    }
+    
+    .badge-green {
+      background-color: #dcfce7;
+      color: #166534;
+    }
+    
+    .badge-yellow {
+      background-color: #fef9c3;
+      color: #854d0e;
+    }
+    
+    .badge-orange {
+      background-color: #ffedd5;
+      color: #9a3412;
+    }
+    
+    .badge-red {
+      background-color: #fee2e2;
+      color: #b91c1c;
+    }
+    
+    .badge-gray {
+      background-color: #f3f4f6;
+      color: #4b5563;
+    }
+    
+    /* Dialog */
+    .dialog-backdrop {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background-color: rgba(0, 0, 0, 0.5);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      z-index: 50;
+      opacity: 0;
+      visibility: hidden;
+      transition: opacity 0.2s, visibility 0.2s;
+    }
+    
+    .dialog-backdrop.show {
+      opacity: 1;
+      visibility: visible;
+    }
+    
+    .dialog {
+      background-color: white;
+      border-radius: 0.5rem;
+      box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+      max-width: 95%;
+      width: 36rem;
+      max-height: 90vh;
+      overflow-y: auto;
+      transform: scale(0.95);
+      opacity: 0;
+      transition: transform 0.2s, opacity 0.2s;
+    }
+    
+    .dialog-backdrop.show .dialog {
+      transform: scale(1);
+      opacity: 1;
+    }
+    
+    .dialog-header {
+      padding: 1rem 1.5rem;
+      border-bottom: 1px solid var(--gray-200);
+    }
+    
+    .dialog-title {
+      font-size: 1.125rem;
+      font-weight: 600;
+      color: var(--gray-900);
+    }
+    
+    .dialog-close {
+      position: absolute;
+      top: 1rem;
+      right: 1rem;
+      border: none;
+      background: transparent;
+      cursor: pointer;
+      color: var(--gray-500);
+    }
+    
+    .dialog-close:hover {
+      color: var(--gray-700);
+    }
+    
+    .dialog-body {
+      padding: 1.5rem;
+    }
+    
+    .dialog-footer {
+      padding: 1rem 1.5rem;
+      border-top: 1px solid var(--gray-200);
+      display: flex;
+      justify-content: flex-end;
+      gap: 0.5rem;
+    }
+    
+    /* Loading spinner */
+    .loading-spinner {
+      display: inline-block;
+      width: 1rem;
+      height: 1rem;
+      border: 2px solid rgba(255, 255, 255, 0.3);
+      border-radius: 50%;
+      border-top-color: white;
+      animation: spin 1s ease infinite;
+    }
+    
+    .loading-spinner-dark {
+      border: 2px solid rgba(0, 0, 0, 0.1);
+      border-top-color: var(--gray-700);
+    }
+    
+    @keyframes spin {
+      to {
+        transform: rotate(360deg);
+      }
+    }
+    
+    /* Utilities */
+    .text-center {
+      text-align: center;
+    }
+    
+    .text-right {
+      text-align: right;
+    }
+    
+    .font-medium {
+      font-weight: 500;
+    }
+    
+    .font-bold {
+      font-weight: 700;
+    }
+    
+    .text-sm {
+      font-size: 0.875rem;
+    }
+    
+    .text-xs {
+      font-size: 0.75rem;
+    }
+    
+    .text-lg {
+      font-size: 1.125rem;
+    }
+    
+    .text-xl {
+      font-size: 1.25rem;
+    }
+    
+    .text-2xl {
+      font-size: 1.5rem;
+    }
+    
+    .text-gray-500 {
+      color: var(--gray-500);
+    }
+    
+    .text-gray-700 {
+      color: var(--gray-700);
+    }
+    
+    .mb-1 {
+      margin-bottom: 0.25rem;
+    }
+    
+    .mb-2 {
+      margin-bottom: 0.5rem;
+    }
+    
+    .mb-4 {
+      margin-bottom: 1rem;
+    }
+    
+    .mb-6 {
+      margin-bottom: 1.5rem;
+    }
+    
+    .mt-2 {
+      margin-top: 0.5rem;
+    }
+    
+    .mt-4 {
+      margin-top: 1rem;
+    }
+    
+    .relative {
+      position: relative;
+    }
+    
+    .w-full {
+      width: 100%;
+    }
+    
+    .hidden {
+      display: none;
+    }
+    
+    .space-y-2 > * + * {
+      margin-top: 0.5rem;
+    }
+    
+    .space-y-4 > * + * {
+      margin-top: 1rem;
+    }
+    
+    /* Toast notification */
+    .toast-container {
+      position: fixed;
+      bottom: 1.5rem;
+      right: 1.5rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+      z-index: 50;
+    }
+    
+    .toast {
+      display: flex;
+      align-items: center;
+      padding: 1rem;
+      border-radius: 0.375rem;
+      background-color: white;
+      border-left: 4px solid var(--primary);
+      box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+      transform: translateX(100%);
+      opacity: 0;
+      transition: transform 0.3s, opacity 0.3s;
+    }
+    
+    .toast.show {
+      transform: translateX(0);
+      opacity: 1;
+    }
+    
+    .toast-icon {
+      margin-right: 0.75rem;
+      color: var(--primary);
+    }
+    
+    .toast-message {
+      font-size: 0.875rem;
+    }
+    
+    .toast-success {
+      border-color: var(--success);
+    }
+    
+    .toast-success .toast-icon {
+      color: var(--success);
+    }
+    
+    .toast-error {
+      border-color: var(--danger);
+    }
+    
+    .toast-error .toast-icon {
+      color: var(--danger);
+    }
+    
+    /* Timeline */
+    .timeline {
+      position: relative;
+      margin-top: 1.5rem;
+    }
+    
+    .timeline-item {
+      position: relative;
+      padding-bottom: 1.5rem;
+      padding-left: 2rem;
+    }
+    
+    .timeline-item:last-child {
+      padding-bottom: 0;
+    }
+    
+    .timeline-item::before {
+      content: '';
+      position: absolute;
+      left: 0;
+      top: 0.25rem;
+      width: 1rem;
+      height: 1rem;
+      border-radius: 50%;
+      background-color: var(--primary);
+      z-index: 1;
+    }
+    
+    .timeline-item::after {
+      content: '';
+      position: absolute;
+      left: 0.5rem;
+      top: 1.25rem;
+      bottom: 0;
+      width: 1px;
+      background-color: var(--gray-300);
+    }
+    
+    .timeline-item:last-child::after {
+      display: none;
+    }
+    
+    .timeline-content {
+      margin-bottom: 0.25rem;
+    }
+    
+    .timeline-header {
+      display: flex;
+      justify-content: space-between;
+      margin-bottom: 0.25rem;
+    }
+    
+    .timeline-title {
+      font-weight: 500;
+    }
+    
+    .timeline-date {
+      font-size: 0.75rem;
+      color: var(--gray-500);
+    }
+    
+    .timeline-body {
+      font-size: 0.875rem;
+      color: var(--gray-600);
+    }
+  </style>
+</head>
+<body>
+  <header class="header">
+    <div class="container">
+      <div class="header-content">
+        <div class="flex items-center">
+          <div class="logo">
+            <span class="logo-text">CivicPulse</span>
+            <span class="admin-badge">Admin</span>
+          </div>
+          
+          <nav class="nav">
+            <a href="#" class="nav-link active">Dashboard</a>
+            <a href="#" class="nav-link">Complaints</a>
+            <a href="#" class="nav-link">Users</a>
+            <a href="#" class="nav-link">Reports</a>
+          </nav>
+        </div>
+        
+        <div class="header-actions">
+          <div class="dropdown" id="notificationDropdown">
+            <button class="btn-ghost" onclick="toggleDropdown('notificationDropdown')">
+              <div class="icon-badge">
+                <svg class="icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                  <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path>
+                  <path d="M13.73 21a2 2 0 0 1-3.46 0"></path>
+                </svg>
+              </div>
+            </button>
+            <div class="dropdown-menu dropdown-menu-notification">
+              <div class="dropdown-header">Notifications</div>
+              <div class="dropdown-body">
+                <div class="dropdown-item">
+                  <div>
+                    <div class="font-medium">New complaint submitted</div>
+                    <div class="text-xs text-gray-500">10 minutes ago</div>
+                  </div>
+                </div>
+                <div class="dropdown-item">
+                  <div>
+                    <div class="font-medium">Resolution time alert</div>
+                    <div class="text-xs text-gray-500">1 hour ago</div>
+                  </div>
+                </div>
+                <div class="dropdown-item">
+                  <div>
+                    <div class="font-medium">Weekly report available</div>
+                    <div class="text-xs text-gray-500">Yesterday</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          
+          <div class="dropdown" id="userDropdown">
+            <button class="btn-ghost flex items-center gap-2" onclick="toggleDropdown('userDropdown')">
+              <svg class="icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                <path d="M12 2a10 10 0 1 0 0 20 10 10 0 0 0 0-20z"></path>
+                <path d="M12 8a3 3 0 1 0 0 6 3 3 0 0 0 0-6z"></path>
+                <path d="M18 18.5a8 8 0 0 0-12 0"></path>
+              </svg>
+              <span class="hidden md:flex">Admin User</span>
+            </button>
+            <div class="dropdown-menu">
+              <div class="dropdown-header">My Account</div>
+              <div class="dropdown-item">
+                <svg class="icon-sm dropdown-item-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                  <path d="M12 2a10 10 0 1 0 0 20 10 10 0 0 0 0-20z"></path>
+                  <path d="M12 8a3 3 0 1 0 0 6 3 3 0 0 0 0-6z"></path>
+                  <path d="M18 18.5a8 8 0 0 0-12 0"></path>
+                </svg>
+                <span>Profile</span>
+              </div>
+              <div class="dropdown-item">
+                <svg class="icon-sm dropdown-item-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                  <path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2z"></path>
+                  <circle cx="12" cy="12" r="3"></circle>
+                </svg>
+                <span>Settings</span>
+              </div>
+              <div class="dropdown-divider"></div>
+              <div class="dropdown-item">
+                <span>Log out</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main class="main">
+    <div class="container">
+      <div class="page-header flex flex-col md:flex-row md:items-center justify-between">
+        <h1 class="page-title">Admin Dashboard</h1>
+        
+        <div class="flex flex-col sm:flex-row gap-3 mt-4 md:mt-0">
+          <div class="select" id="departmentSelect">
+            <button class="select-trigger" onclick="toggleSelect('departmentSelect')">
+              <span id="selectedDepartment">All Departments</span>
+              <svg class="icon-sm" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                <polyline points="6 9 12 15 18 9"></polyline>
+              </svg>
+            </button>
+            <div class="select-content">
+              <div class="select-item" onclick="selectDepartment('All Departments')">All Departments</div>
+              <div class="select-item" onclick="selectDepartment('Sanitation')">Sanitation</div>
+              <div class="select-item" onclick="selectDepartment('Roads & Transport')">Roads & Transport</div>
+              <div class="select-item" onclick="selectDepartment('Water Services')">Water Services</div>
+              <div class="select-item" onclick="selectDepartment('Parks & Recreation')">Parks & Recreation</div>
+              <div class="select-item" onclick="selectDepartment('Police Department')">Police Department</div>
+            </div>
+          </div>
+          
+          <button class="btn btn-outline flex gap-2" id="exportButton" onclick="handleExportData()">
+            <svg class="icon-sm" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+              <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+              <polyline points="7 10 12 15 17 10"></polyline>
+              <line x1="12" y1="15" x2="12" y2="3"></line>
+            </svg>
+            <span id="exportButtonText">Export Data</span>
+          </button>
+        </div>
+      </div>
+      
+      <div class="tabs" id="mainTabs">
+        <div class="tabs-list">
+          <div class="tab-trigger active" data-tab="dashboard">Dashboard</div>
+          <div class="tab-trigger" data-tab="complaints">Complaints</div>
+        </div>
+        
+        <div class="tab-content active" id="dashboardTab">
+          <!-- Metric Cards -->
+          <div class="metrics-grid">
+            <div class="card metric-card">
+              <div class="metric-card-body metric-card-blue">
+                <div class="metric-content">
+                  <div class="metric-label">Total Complaints</div>
+                  <div class="metric-value">1,284</div>
+                </div>
+                <div class="metric-icon">
+                  <svg class="icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                    <path d="M9 5H7a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2h-2"></path>
+                    <rect x="9" y="3" width="6" height="4" rx="1" ry="1"></rect>
+                    <path d="M9 13h6"></path>
+                    <path d="M9 17h6"></path>
+                    <path d="M9 9h1"></path>
+                  </svg>
+                </div>
+              </div>
+            </div>
+            
+            <div class="card metric-card">
+              <div class="metric-card-body metric-card-green">
+                <div class="metric-content">
+                  <div class="metric-label">Resolved Issues</div>
+                  <div class="metric-value">879</div>
+                </div>
+                <div class="metric-icon">
+                  <svg class="icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                    <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
+                    <polyline points="22 4 12 14.01 9 11.01"></polyline>
+                  </svg>
+                </div>
+              </div>
+            </div>
+            
+            <div class="card metric-card">
+              <div class="metric-card-body metric-card-orange">
+                <div class="metric-content">
+                  <div class="metric-label">Pending Issues</div>
+                  <div class="metric-value">405</div>
+                </div>
+                <div class="metric-icon">
+                  <svg class="icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                    <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path>
+                    <line x1="12" y1="9" x2="12" y2="13"></line>
+                    <line x1="12" y1="17" x2="12.01" y2="17"></line>
+                  </svg>
+                </div>
+              </div>
+            </div>
+            
+            <div class="card metric-card">
+              <div class="metric-card-body metric-card-purple">
+                <div class="metric-content">
+                  <div class="metric-label">Avg. Resolution Time</div>
+                  <div class="metric-value">3.2 days</div>
+                </div>
+                <div class="metric-icon">
+                  <svg class="icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                    <circle cx="12" cy="12" r="10"></circle>
+                    <polyline points="12 6 12 12 16 14"></polyline>
+                  </svg>
+                </div>
+              </div>
+            </div>
+          </div>
+          
+          <!-- Charts Section -->
+          <div class="charts-grid">
+            <div class="card">
+              <div class="card-header">
+                <h3 class="card-title">Complaints by Category</h3>
+                <p class="card-subtitle">Distribution of complaints across different categories</p>
+              </div>
+              <div class="card-body">
+                <div class="chart-container" id="categoryChart">
+                  <div class="text-center text-gray-500">
+                    <p class="mb-2">Chart visualization placeholder</p>
+                    <p>Category distribution will be displayed here</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+            
+            <div class="card">
+              <div class="card-header">
+                <h3 class="card-title">Resolution Time Trends</h3>
+                <p class="card-subtitle">Average resolution time by month (in days)</p>
+              </div>
+              <div class="card-body">
+                <div class="chart-container" id="trendsChart">
+                  <div class="text-center text-gray-500">
+                    <p class="mb-2">Chart visualization placeholder</p>
+                    <p>Monthly resolution time trends will be displayed here</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+            
+            <div class="card status-chart">
+              <div class="card-header">
+                <h3 class="card-title">Complaint Status by Department</h3>
+                <p class="card-subtitle">Breakdown of complaint statuses across departments</p>
+              </div>
+              <div class="card-body">
+                <div class="chart-container" id="statusChart">
+                  <div class="text-center text-gray-500">
+                    <p class="mb-2">Chart visualization placeholder</p>
+                    <p>Department status breakdown will be displayed here</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        
+        <div class="tab-content" id="complaintsTab">
+          <div class="section">
+            <div class="flex flex-col md:flex-row gap-4 items-center mb-6">
+              <div class="relative w-full md:w-1/3">
+                <svg class="icon-sm input-icon-left" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                  <circle cx="11" cy="11" r="8"></circle>
+                  <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+                </svg>
+                <input type="text" class="input input-icon" id="searchInput" placeholder="Search complaints..." onkeyup="searchComplaints()">
+              </div>
+              <button class="btn btn-outline gap-2">
+                <svg class="icon-sm" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                  <polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"></polygon>
+                </svg>
+                Filters
+              </button>
+            </div>
+            
+            <div class="card">
+              <div class="card-body p-0">
+                <div class="table-container">
+                  <table class="table" id="complaintsTable">
+                    <thead>
+                      <tr>
+                        <th>ID</th>
+                        <th>Title</th>
+                        <th>Category</th>
+                        <th>Status</th>
+                        <th>Priority</th>
+                        <th>Date</th>
+                        <th>Actions</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      <!-- Rows will be populated by JavaScript -->
+                    </tbody>
+                  </table>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+  
+  <!-- Complaint Detail Dialog -->
+  <div class="dialog-backdrop" id="complaintDetailDialog">
+    <div class="dialog">
+      <div class="dialog-header">
+        <h3 class="dialog-title" id="complaintDetailTitle"></h3>
+        <button class="dialog-close" onclick="closeDialog('complaintDetailDialog')">
+          <svg class="icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+            <line x1="18" y1="6" x2="6" y2="18"></line>
+            <line x1="6" y1="6" x2="18" y2="18"></line>
+          </svg>
+        </button>
+      </div>
+      <div class="dialog-body">
+        <div id="complaintDetailContent">
+          <!-- Will be populated by JavaScript -->
+        </div>
+      </div>
+      <div class="dialog-footer">
+        <button class="btn btn-outline" onclick="closeDialog('complaintDetailDialog')">Close</button>
+        <button class="btn btn-primary">Update Status</button>
+      </div>
+    </div>
+  </div>
+  
+  <!-- Toast Container -->
+  <div class="toast-container" id="toastContainer">
+    <!-- Toasts will be added here -->
+  </div>
+  
+  <script>
+    // Mock data for complaints
+    const complaints = [
+      {
+        id: "CP-2023-001",
+        title: "Pothole on Main Street",
+        category: "Roads",
+        status: "Resolved",
+        priority: "High",
+        date: "2023-11-10",
+        description: "Large pothole causing traffic hazards and vehicle damage.",
+        location: "123 Main St, Downtown",
+        department: "Roads & Transport",
+        submittedBy: "John Doe",
+        contact: "john.doe@email.com",
+        updates: [
+          { date: "2023-11-10", status: "New", message: "Complaint received and logged in the system." },
+          { date: "2023-11-11", status: "Assigned", message: "Assigned to Roads maintenance team." },
+          { date: "2023-11-13", status: "In Progress", message: "Maintenance crew dispatched for repairs." },
+          { date: "2023-11-15", status: "Resolved", message: "Pothole has been filled and road surface repaired." }
+        ]
+      },
+      {
+        id: "CP-2023-002",
+        title: "Broken Street Light",
+        category: "Electricity",
+        status: "In Progress",
+        priority: "Medium",
+        date: "2023-11-12",
+        description: "Street light not working at the corner of Elm and Oak streets.",
+        location: "Corner of Elm St & Oak St",
+        department: "Electricity Services",
+        submittedBy: "Jane Smith",
+        contact: "jane.smith@email.com",
+        updates: [
+          { date: "2023-11-12", status: "New", message: "Complaint received and logged in the system." },
+          { date: "2023-11-13", status: "Assigned", message: "Assigned to Electricity maintenance team." },
+          { date: "2023-11-16", status: "In Progress", message: "Technician scheduled for repair tomorrow." }
+        ]
+      },
+      {
+        id: "CP-2023-003",
+        title: "Overflowing Trash Bin",
+        category: "Sanitation",
+        status: "Assigned",
+        priority: "Low",
+        date: "2023-11-14",
+        description: "Trash bin at Central Park is overflowing and causing litter in the area.",
+        location: "Central Park, North Entrance",
+        department: "Sanitation",
+        submittedBy: "Robert Johnson",
+        contact: "robert.j@email.com",
+        updates: [
+          { date: "2023-11-14", status: "New", message: "Complaint received and logged in the system." },
+          { date: "2023-11-15", status: "Assigned", message: "Assigned to Sanitation team for cleaning." }
+        ]
+      },
+      {
+        id: "CP-2023-004",
+        title: "Water Leak from Main Pipe",
+        category: "Water",
+        status: "New",
+        priority: "High",
+        date: "2023-11-15",
+        description: "Water leaking from main pipe causing flooding on Maple Avenue.",
+        location: "456 Maple Ave",
+        department: "Water Services",
+        submittedBy: "Sarah Williams",
+        contact: "sarah.w@email.com",
+        updates: [
+          { date: "2023-11-15", status: "New", message: "Complaint received and logged in the system." }
+        ]
+      },
+      {
+        id: "CP-2023-005",
+        title: "Damaged Park Bench",
+        category: "Parks",
+        status: "Resolved",
+        priority: "Low",
+        date: "2023-11-08",
+        description: "Park bench at Riverside Park has broken slats that pose a safety hazard.",
+        location: "Riverside Park, East Section",
+        department: "Parks & Recreation",
+        submittedBy: "Michael Brown",
+        contact: "michael.b@email.com",
+        updates: [
+          { date: "2023-11-08", status: "New", message: "Complaint received and logged in the system." },
+          { date: "2023-11-09", status: "Assigned", message: "Assigned to Parks maintenance team." },
+          { date: "2023-11-11", status: "In Progress", message: "Maintenance team scheduled for repair." },
+          { date: "2023-11-14", status: "Resolved", message: "Bench has been repaired and is now safe for use." }
+        ]
+      },
+    ];
+    
+    // Initialize the dashboard
+    document.addEventListener('DOMContentLoaded', function() {
+      populateComplaintsTable();
+      setupTabsListeners();
+    });
+    
+    // Toggle dropdown visibility
+    function toggleDropdown(id) {
+      const dropdown = document.querySelector(`#${id} .dropdown-menu`);
+      dropdown.classList.toggle('show');
+      
+      // Close other dropdowns
+      document.querySelectorAll('.dropdown-menu.show').forEach(menu => {
+        if (!menu.parentElement.id.includes(id)) {
+          menu.classList.remove('show');
+        }
+      });
+      
+      event.stopPropagation();
+    }
+    
+    // Close dropdowns when clicking outside
+    document.addEventListener('click', function() {
+      document.querySelectorAll('.dropdown-menu.show').forEach(menu => {
+        menu.classList.remove('show');
+      });
+    });
+    
+    // Select department
+    function toggleSelect(id) {
+      const select = document.querySelector(`#${id} .select-content`);
+      select.classList.toggle('show');
+      event.stopPropagation();
+    }
+    
+    function selectDepartment(department) {
+      document.getElementById('selectedDepartment').textContent = department;
+      document.querySelector('#departmentSelect .select-content').classList.remove('show');
+      
+      // Show toast notification
+      showToast(`Filtered by ${department}`, 'success');
+    }
+    
+    // Export data function
+    function handleExportData() {
+      const button = document.getElementById('exportButton');
+      const buttonText = document.getElementById('exportButtonText');
+      
+      // Show loading state
+      button.disabled = true;
+      buttonText.innerHTML = '<span class="loading-spinner"></span> Exporting...';
+      
+      // Simulate export process
+      setTimeout(() => {
+        // Reset button state
+        button.disabled = false;
+        buttonText.textContent = 'Export Data';
+        
+        // Show success toast
+        showToast('Data exported successfully', 'success');
+      }, 2000);
+    }
+    
+    // Tab switching
+    function setupTabsListeners() {
+      const tabTriggers = document.querySelectorAll('.tab-trigger');
+      
+      tabTriggers.forEach(trigger => {
+        trigger.addEventListener('click', () => {
+          const tabId = trigger.getAttribute('data-tab');
+          
+          // Update active trigger
+          document.querySelectorAll('.tab-trigger').forEach(t => {
+            t.classList.remove('active');
+          });
+          trigger.classList.add('active');
+          
+          // Update active content
+          document.querySelectorAll('.tab-content').forEach(content => {
+            content.classList.remove('active');
+          });
+          document.getElementById(`${tabId}Tab`).classList.add('active');
+        });
+      });
+    }
+    
+    // Populate complaints table
+    function populateComplaintsTable() {
+      const tableBody = document.querySelector('#complaintsTable tbody');
+      tableBody.innerHTML = '';
+      
+      complaints.forEach(complaint => {
+        const row = document.createElement('tr');
+        row.className = 'table-row';
+        
+        // Format date
+        const formattedDate = new Date(complaint.date).toLocaleDateString('en-US', {
+          year: 'numeric',
+          month: 'short',
+          day: 'numeric'
+        });
+        
+        row.innerHTML = `
+          <td class="font-medium">${complaint.id}</td>
+          <td>${complaint.title}</td>
+          <td>${complaint.category}</td>
+          <td>${getStatusBadge(complaint.status)}</td>
+          <td>${getPriorityBadge(complaint.priority)}</td>
+          <td>${formattedDate}</td>
+          <td class="text-right">
+            <div class="flex justify-end gap-2">
+              <button class="btn-ghost" onclick="viewComplaintDetail('${complaint.id}')">
+                <svg class="icon-sm" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                  <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
+                  <circle cx="12" cy="12" r="3"></circle>
+                </svg>
+              </button>
+              <button class="btn-ghost">
+                <svg class="icon-sm" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                  <path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"></path>
+                  <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
+                </svg>
+              </button>
+              <button class="btn-ghost">
+                <svg class="icon-sm" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                  <polyline points="3 6 5 6 21 6"></polyline>
+                  <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
+                  <line x1="10" y1="11" x2="10" y2="17"></line>
+                  <line x1="14" y1="11" x2="14" y2="17"></line>
+                </svg>
+              </button>
+            </div>
+          </td>
+        `;
+        
+        tableBody.appendChild(row);
+      });
+    }
+    
+    // Status badge HTML generator
+    function getStatusBadge(status) {
+      let badgeClass = '';
+      
+      switch (status) {
+        case 'New':
+          badgeClass = 'badge-blue';
+          break;
+        case 'Assigned':
+          badgeClass = 'badge-orange';
+          break;
+        case 'In Progress':
+          badgeClass = 'badge-yellow';
+          break;
+        case 'Resolved':
+          badgeClass = 'badge-green';
+          break;
+        default:
+          badgeClass = 'badge-gray';
+      }
+      
+      return `<span class="badge ${badgeClass}">${status}</span>`;
+    }
+    
+    // Priority badge HTML generator
+    function getPriorityBadge(priority) {
+      let badgeClass = '';
+      
+      switch (priority) {
+        case 'High':
+          badgeClass = 'badge-red';
+          break;
+        case 'Medium':
+          badgeClass = 'badge-orange';
+          break;
+        case 'Low':
+          badgeClass = 'badge-blue';
+          break;
+        default:
+          badgeClass = 'badge-gray';
+      }
+      
+      return `<span class="badge ${badgeClass}">${priority}</span>`;
+    }
+    
+    // Search complaints
+    function searchComplaints() {
+      const searchTerm = document.getElementById('searchInput').value.toLowerCase();
+      const tableRows = document.querySelectorAll('#complaintsTable tbody tr');
+      
+      tableRows.forEach(row => {
+        const text = row.textContent.toLowerCase();
+        if (text.includes(searchTerm)) {
+          row.style.display = '';
+        } else {
+          row.style.display = 'none';
+        }
+      });
+    }
+    
+    // View complaint detail
+    function viewComplaintDetail(complaintId) {
+      const complaint = complaints.find(c => c.id === complaintId);
+      if (!complaint) return;
+      
+      const dialog = document.getElementById('complaintDetailDialog');
+      const title = document.getElementById('complaintDetailTitle');
+      const content = document.getElementById('complaintDetailContent');
+      
+      // Set title with ID
+      title.innerHTML = `
+        ${complaint.title}
+        <span class="text-sm text-gray-500">(${complaint.id})</span>
+      `;
+      
+      // Format date
+      const formattedDate = new Date(complaint.date).toLocaleDateString('en-US', {
+        year: 'numeric',
+        month: 'short',
+        day: 'numeric'
+      });
+      
+      // Generate complaint details HTML
+      content.innerHTML = `
+        <div class="mb-4">
+          ${getStatusBadge(complaint.status)}
+        </div>
+        
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
+          <div>
+            <h4 class="font-medium text-gray-700 mb-2">Details</h4>
+            <dl class="space-y-2">
+              <div class="flex gap-2">
+                <dt class="font-medium text-gray-500">Category:</dt>
+                <dd>${complaint.category}</dd>
+              </div>
+              <div class="flex gap-2">
+                <dt class="font-medium text-gray-500">Priority:</dt>
+                <dd>${getPriorityBadge(complaint.priority)}</dd>
+              </div>
+              <div class="flex gap-2">
+                <dt class="font-medium text-gray-500">Department:</dt>
+                <dd>${complaint.department}</dd>
+              </div>
+              <div class="flex gap-2">
+                <dt class="font-medium text-gray-500">Location:</dt>
+                <dd>${complaint.location}</dd>
+              </div>
+              <div class="flex gap-2">
+                <dt class="font-medium text-gray-500">Submitted by:</dt>
+                <dd>${complaint.submittedBy}</dd>
+              </div>
+              <div class="flex gap-2">
+                <dt class="font-medium text-gray-500">Contact:</dt>
+                <dd>${complaint.contact}</dd>
+              </div>
+              <div class="flex gap-2">
+                <dt class="font-medium text-gray-500">Date:</dt>
+                <dd>${formattedDate}</dd>
+              </div>
+            </dl>
+          </div>
+          
+          <div>
+            <h4 class="font-medium text-gray-700 mb-2">Description</h4>
+            <p class="text-gray-600">${complaint.description}</p>
+          </div>
+        </div>
+        
+        <div>
+          <h4 class="font-medium text-gray-700 mb-4">Complaint Timeline</h4>
+          <div class="timeline">
+            ${generateTimelineHTML(complaint.updates)}
+          </div>
+        </div>
+      `;
+      
+      // Show dialog
+      dialog.classList.add('show');
+    }
+    
+    // Generate timeline HTML
+    function generateTimelineHTML(updates) {
+      if (!updates || updates.length === 0) return '<p>No updates available</p>';
+      
+      // Sort updates in reverse chronological order
+      const sortedUpdates = [...updates].sort((a, b) => 
+        new Date(b.date).getTime() - new Date(a.date).getTime()
+      );
+      
+      return sortedUpdates.map(update => {
+        const formattedDate = new Date(update.date).toLocaleDateString('en-US', {
+          year: 'numeric',
+          month: 'short',
+          day: 'numeric'
+        });
+        
+        return `
+          <div class="timeline-item">
+            <div class="timeline-content">
+              <div class="timeline-header">
+                <span class="timeline-title">${update.status}</span>
+                <span class="timeline-date">${formattedDate}</span>
+              </div>
+              <div class="timeline-body">${update.message}</div>
+            </div>
+          </div>
+        `;
+      }).join('');
+    }
+    
+    // Close dialog
+    function closeDialog(dialogId) {
+      document.getElementById(dialogId).classList.remove('show');
+    }
+    
+    // Show toast notification
+    function showToast(message, type = 'default') {
+      const container = document.getElementById('toastContainer');
+      const toast = document.createElement('div');
+      toast.className = `toast toast-${type}`;
+      
+      // Get appropriate icon based on type
+      let icon = '';
+      switch (type) {
+        case 'success':
+          icon = `
+            <svg class="icon toast-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+              <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
+              <polyline points="22 4 12 14.01 9 11.01"></polyline>
+            </svg>
+          `;
+          break;
+        case 'error':
+          icon = `
+            <svg class="icon toast-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+              <circle cx="12" cy="12" r="10"></circle>
+              <line x1="12" y1="8" x2="12" y2="12"></line>
+              <line x1="12" y1="16" x2="12.01" y2="16"></line>
+            </svg>
+          `;
+          break;
+        default:
+          icon = `
+            <svg class="icon toast-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+              <circle cx="12" cy="12" r="10"></circle>
+              <line x1="12" y1="16" x2="12" y2="12"></line>
+              <line x1="12" y1="8" x2="12.01" y2="8"></line>
+            </svg>
+          `;
+      }
+      
+      toast.innerHTML = `
+        ${icon}
+        <div class="toast-message">${message}</div>
+      `;
+      
+      container.appendChild(toast);
+      
+      // Add show class after a small delay to trigger animation
+      setTimeout(() => {
+        toast.classList.add('show');
+      }, 10);
+      
+      // Remove toast after 5 seconds
+      setTimeout(() => {
+        toast.classList.remove('show');
+        setTimeout(() => {
+          container.removeChild(toast);
+        }, 300); // Wait for transition to finish
+      }, 5000);
+    }
+  </script>
+</body>
+</html>
